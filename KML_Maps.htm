@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<!-- Note all the comments in the code -->
+<head>
+
+<!-- The styles here are defined in the file, rather than a seperate CSS file -->
+<style type="text/css"> 
+ html { height: 100% } 
+ body { height: 100%; margin: 20px; padding: 0px }
+</style> 
+
+<!-- To get new API codes, see https://accounts.google.com/ -->
+<script type="text/javascript"
+        src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;key=AIzaSyDC7HLNAG0Qy0DbPwnkyxFTYMOM2lFrZhU"></script>
+<script type="text/javascript"> 
+//<![CDATA[
+var map;
+var new_layer;
+var layers = {};   // define layers array
+layers.files = {}; // define sub-array for filename/service URL
+layers.names = {}; // define sub-array for label for file or service
+layers.files = [   // populate with layers: to customise, add new data source and name lines below, linked to input checkbox lines at the end
+  new google.maps.KmlLayer('http://public.cranfield.ac.uk/ss01shh/gim/25k.kml'),
+  new google.maps.KmlLayer('http://www.landis.org.uk/arcgis/rest/services/LandIS/SoilMapOutlines/MapServer/kml/mapImage.kmz'),
+  new google.maps.KmlLayer('http://www.landis.org.uk/arcgis/services/LandIS/SoilMapOutlines/MapServer/KmlServer')
+  ];
+layers.names = ["Personal_KMZ_File","LandIS_KMZ_File","AGS_Service"];
+
+// Layer Manager code - allows efficient use of multiple layers
+function toggleLayer(lyrName){
+  var names = layers.names;
+  var found = false;
+  for (i in names){
+    if(lyrName === names[i]){
+      found = true;
+      if (document.getElementById(layers.names[i]).checked){
+        layers.files[i].setMap(map);  // turn layer ON
+      } else {
+        layers.files[i].setMap(null); // turn layer OFF
+      }      
+      break;
+    }
+  }
+  if (!found){alert("error: toggleLayer(" + lyrName + ") : layer not found");} // error trap
+}
+
+function initialise() { // constructor function
+    var centerpoint = new google.maps.LatLng(52.6093818544749,-1.906121999999982);
+    var mapOptions = {
+      zoom: 6,
+      center: centerpoint,
+      mapTypeId: google.maps.MapTypeId.TERRAIN
+    }
+    map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+    // Below, an event handler is used to trap the 'bounds_changed' event and write coordinates out on-screen, note use of virtual function
+	google.maps.event.addListener(map, "bounds_changed", function() {
+      document.getElementById("map_info").innerHTML = "zoom level: " + 
+	  map.getZoom().toString() + "<br />\n" + "center: " + map.getCenter().toString();
+    });
+	// Set up initial checkbox status and turn layers on and off at the start up:
+	document.getElementById("Personal_KMZ_File").checked=true;
+    toggleLayer('Personal_KMZ_File');
+	
+	// Note using the layer manager above somewhat hides the simplicity of adding new kml layers, 
+	//   which is done like this (uncomment the 2 lines below to see):
+	//new_layer = new google.maps.KmlLayer('http://public.cranfield.ac.uk/ss01shh/gim/25k.kml');
+    //new_layer.setMap(map);
+}
+
+function addLoadEvent(func) {    
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } 
+  else {
+    window.onload = function() {
+      oldonload();
+      func();
+    }
+  }
+}
+addLoadEvent(initialise);
+
+//]]>
+</script>
+</head>
+<body>
+<h2>A1136 Spatial Data and the Internet - Google Maps API example</h2>
+<div id="container" style="overflow: auto; height: 4%;">
+  <div id="map_info" style="float: left; display: inline; font-size: xx-small; background-color: #ffefd5;">Loading ...</div>
+</div>
+<div id="map_canvas" style="width: 700px; height: 500px"></div>
+<form name="frmToc"> <!-- to customise, add new input lines below, linked to data source names above -->
+  <input type='checkbox' name='Personal_KMZ_File' id='Personal_KMZ_File' onClick='toggleLayer(this.name)'/>Personal KMZ File<br />
+  <input type='checkbox' name='LandIS_KMZ_File' id='LandIS_KMZ_File' onClick='toggleLayer(this.name)'/>LandIS KMZ File<br />
+  <input type='checkbox' name='AGS_Service' id='AGS_Service' onClick='toggleLayer(this.name)'/>ArcGIS Server MKZ SOAP service<br />
+    </form>
+<hr />
+<input type="button" value="Hybrid map" onclick="map.setMapTypeId(google.maps.MapTypeId.HYBRID);" />
+<input type="button" value="Roadmap map" onclick="map.setMapTypeId(google.maps.MapTypeId.ROADMAP);" />
+<input type="button" value="Satellite map" onclick="map.setMapTypeId(google.maps.MapTypeId.SATELLITE);" />
+<input type="button" value="Terrain map" onclick="map.setMapTypeId(google.maps.MapTypeId.TERRAIN);" />
+</br>
+Here are links to the same kmz data files and ArcGIS Server KML service: <a href="http://www.landis.org.uk/arcgis/services/LandIS/SoilMapOutlines/MapServer/KmlServer">Public ArcGIS Server KMZ service (SOAP)</a>, <a href="http://public.cranfield.ac.uk/ss01shh/gim/25k.kmz">Personal Static KMZ file link</a> and the <a href="http://www.landis.org.uk/arcgis/rest/services/LandIS/SoilMapOutlines/MapServer/kml/mapImage.kmz">LandIS Static KMZ file link</a>.<br />These should open into Google Earth.<br />
+Note the KMZ files and web services <b>MUST</b> come from a public-facing server (<b>not</b> a PC Labs computer!!), so use your personal public space for this.<br /><br />
+Do note that if you publish a KMZ service from ArcGIS Server, and then intend to 'consume' it in a Google Maps application, such as here, then there are two published URL endpoints offered, a 'SOAP' and a 'REST' URL (for your service) - you want the SOAP one.<br />
+So for example here:</br>
+SOAP - http://www.landis.org.uk/arcgis/services/LandIS/SoilMapOutlines/MapServer/KmlServer - use this one<br />
+REST - http://www.landis.org.uk/arcgis/rest/services/LandIS/SoilMapOutlines/MapServer/KmlServer - not this one
+</body>
+</html>
