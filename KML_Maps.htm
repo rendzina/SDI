@@ -11,7 +11,7 @@
 
 <!-- To get new API codes, see https://accounts.google.com/ -->
 <script type="text/javascript"
-        src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;key=AIzaSyAczx2nVpK2ifEG4IDm6pZJLszEhJX1Y_k"></script>
+        src="http://maps.googleapis.com/maps/api/js?&key=AIzaSyAczx2nVpK2ifEG4IDm6pZJLszEhJX1Y_k"></script>
 <script type="text/javascript"> 
 //<![CDATA[
 var map;
@@ -100,7 +100,7 @@ addLoadEvent(initialise);
 <input type="button" value="Roadmap map" onclick="map.setMapTypeId(google.maps.MapTypeId.ROADMAP);" />
 <input type="button" value="Satellite map" onclick="map.setMapTypeId(google.maps.MapTypeId.SATELLITE);" />
 <input type="button" value="Terrain map" onclick="map.setMapTypeId(google.maps.MapTypeId.TERRAIN);" />
-</br>
+<br />
 Here are links to the same kmz data files and ArcGIS Server KML service: <a href="http://www.landis.org.uk/arcgis/services/LandIS/SoilMapOutlines/MapServer/KmlServer">Public ArcGIS Server KMZ service (SOAP)</a>, <a href="http://public.cranfield.ac.uk/ss01shh/gim/25k.kmz">Personal Static KMZ file link</a> and the <a href="http://www.landis.org.uk/arcgis/rest/services/LandIS/SoilMapOutlines/MapServer/kml/mapImage.kmz">LandIS Static KMZ file link</a>.<br />These should open into Google Earth.<br />
 Note the KMZ files and web services <b>MUST</b> come from a public-facing server (<b>not</b> a PC Labs computer!!), so use your personal public space for this.<br /><br />
 Do note that if you publish a KMZ service from ArcGIS Server, and then intend to 'consume' it in a Google Maps application, such as here, then there are two published URL endpoints offered, a 'SOAP' and a 'REST' URL (for your service) - you want the SOAP one.<br />
