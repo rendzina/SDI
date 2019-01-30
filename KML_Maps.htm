@@ -10,8 +10,7 @@
 </style> 
 
 <!-- To get new API codes, see https://accounts.google.com/ -->
-<script type="text/javascript"
-        src="http://maps.googleapis.com/maps/api/js?&key=AIzaSyAczx2nVpK2ifEG4IDm6pZJLszEhJX1Y_k"></script>
+<script src="http://maps.googleapis.com/maps/api/js?&key=AIzaSyAczx2nVpK2ifEG4IDm6pZJLszEhJX1Y_k&callback=initMap"></script>
 <script type="text/javascript"> 
 //<![CDATA[
 var map;
@@ -44,7 +43,7 @@ function toggleLayer(lyrName){
   if (!found){alert("error: toggleLayer(" + lyrName + ") : layer not found");} // error trap
 }
 
-function initialise() { // constructor function
+function initMap() { // constructor function
     var centerpoint = new google.maps.LatLng(52.6093818544749,-1.906121999999982);
     var mapOptions = {
       zoom: 6,
@@ -66,21 +65,6 @@ function initialise() { // constructor function
 	//new_layer = new google.maps.KmlLayer('http://public.cranfield.ac.uk/ss01shh/gim/25k.kml');
     //new_layer.setMap(map);
 }
-
-function addLoadEvent(func) {    
-  var oldonload = window.onload;
-  if (typeof window.onload != 'function') {
-    window.onload = func;
-  } 
-  else {
-    window.onload = function() {
-      oldonload();
-      func();
-    }
-  }
-}
-addLoadEvent(initialise);
-
 //]]>
 </script>
 </head>
